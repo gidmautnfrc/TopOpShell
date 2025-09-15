@@ -28,27 +28,27 @@ psi_new = zeros(num, 1);
 
 for i = 1:num
 
-    x_new = p_new(1,i); y_new = p_new(2,i); z_new = p_new(3,i);
+x_new = p_new(1,i); y_new = p_new(2,i); z_new = p_new(3,i);
 
-    [~,id] = min((x_new' - x_g).^2 + (y_new' - y_g).^2 + (z_new' - z_g).^2); %Me devuelve el indice del elemento cuya distancia es la menor
+[~,id] = min((x_new - x_g).^2 + (y_new - y_g).^2 + (z_new - z_g).^2); %Me devuelve el indice del elemento cuya distancia es la menor
 
-    % Ya encontre el elemento que contiene al punto
-    % ahora necesito calcular las funciones de forma
+% Ya encontre el elemento que contiene al punto
+% ahora necesito calcular las funciones de forma
 
-    v1 = p_old(:,t_old(1,id)); v2 = p_old(:,t_old(2,id)); v3 = p_old(:,t_old(3,id));
-    P = [x_new; y_new; z_new];
+v1 = p_old(:,t_old(1,id)); v2 = p_old(:,t_old(2,id)); v3 = p_old(:,t_old(3,id));
+P = [x_new; y_new; z_new];
 
-    A = 0.5*norm(cross(v2-v1,v3-v1));
-    A1 = 0.5*norm(cross(P-v2,v3-v2));
-    A2 = 0.5*norm(cross(P-v1,v3-v1));
-    A3 = 0.5*norm(cross(P-v1,v2-v1));
+A = 0.5*norm(cross(v2-v1,v3-v1));
+A1 = 0.5*norm(cross(P-v2,v3-v2));
+A2 = 0.5*norm(cross(P-v1,v3-v1));
+A3 = 0.5*norm(cross(P-v1,v2-v1));
 
-    %Armo el vector de funciones de forma
-    N = [A1/A; A2/A; A3/A];
+%Armo el vector de funciones de forma
+N = [A1/A; A2/A; A3/A];
 
-    psi_v = psi([t_old(1,id); t_old(2,id); t_old(3,id)]);
+psi_v = psi([t_old(1,id); t_old(2,id); t_old(3,id)]);
 
-    psi_new(i) = dot(N,psi_v); %Una interpolacion lineal tambien se puede expresar como un producto escalar
+psi_new(i) = dot(N,psi_v); %Una interpolacion lineal tambien se puede expresar como un producto escalar
 
 end
 
