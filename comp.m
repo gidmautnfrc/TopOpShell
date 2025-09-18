@@ -26,10 +26,10 @@ clear all; close all; format long e; clc;
 %       example= @perfilL; 
 %       example= @perfilcuadrado; 
 %       example=@hipercubo;
-%        example=@perfildobleT;
+%       example=@perfildobleT;
 %       example=@perfildobleT02;
-       example=@perfildobleT03;
-
+%       example=@perfildobleT03;
+        example= @casquete; 
     % load problem data
     cd('examples')
              [mesh, params, psi, bc, signatures, pdecoef, matprop] = example(mesh,psi,params);

@@ -1,4 +1,4 @@
-function [psi] = Interpolation(psi,mesh,msh)
+function [psi] = InterpolationCS (psi,mesh,msh)
 
 t_old = mesh.t; % tiene un elemento por columna
 p_old = mesh.p; % Tiene un nodo por columna
@@ -33,15 +33,24 @@ x_new = p_new(1,i); y_new = p_new(2,i); z_new = p_new(3,i);
 [~,id] = min((x_new - x_g).^2 + (y_new - y_g).^2 + (z_new - z_g).^2); %Me devuelve el indice del elemento cuya distancia es la menor
 
 % Ya encontre el elemento que contiene al punto
-% ahora necesito calcular las funciones de forma
+% Ahora necesito calcular la distancia ya que con el 
+% Vector normal y la distancia podre obtener la proyeccion
 
 v1 = p_old(:,t_old(1,id)); v2 = p_old(:,t_old(2,id)); v3 = p_old(:,t_old(3,id));
 P = [x_new; y_new; z_new];
 
+n = cross(v2-v1,v3-v1); % Vector normal
+
+d = dot(n,P-v1)/norm(n); % Distancia 
+
+pr = P - d*n/norm(n); % Proyeccion 
+
+% ahora necesito calcular las funciones de forma para interpolar
+
 A = 0.5*norm(cross(v2-v1,v3-v1));
-A1 = 0.5*norm(cross(P-v2,v3-v2));
-A2 = 0.5*norm(cross(P-v1,v3-v1));
-A3 = 0.5*norm(cross(P-v1,v2-v1));
+A1 = 0.5*norm(cross(pr-v2,v3-v2));
+A2 = 0.5*norm(cross(pr-v1,v3-v1));
+A3 = 0.5*norm(cross(pr-v1,v2-v1));
 
 %Armo el vector de funciones de forma
 N = [A1/A; A2/A; A3/A];
