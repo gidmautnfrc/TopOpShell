@@ -29,7 +29,9 @@ clear all; close all; format long e; clc;
 %       example=@perfildobleT;
 %       example=@perfildobleT02;
 %       example=@perfildobleT03;
-        example= @casquete; 
+%       example= @casquete; 
+        example= @paraboloid; 
+
     % load problem data
     cd('examples')
              [mesh, params, psi, bc, signatures, pdecoef, matprop] = example(mesh,psi,params);
