@@ -42,21 +42,31 @@ h= longitud_media_maxima;
 %resolucion de  vNeu
 
 h = mean(l_max);
-ratio = 4;
 pchi = (psi<0); %funcion caracteristica 
 tchi= pdeintrp(p, t, pchi); %funcion caracteristica interpolada en el baricentro de cada elemento       
-ep =ratio*h;
+ep =4*h;
 c = ep^2;
 a = 1;
-f = tchi;
-[K,M,F] = assema(p,t,c,a,f);
-K=K+M;
+f = tchi
+m=0;
 
-vNew = K \ F;
 
-v=1-vNew;
+model = createpde();
+geometryFromMesh(model, p, t);
+specifyCoefficients(model, 'm', m, 'd', 0, 'c', c, 'a', a, 'f', f);
+FEMatrices = assembleFEMatrices(model, 'all');
 
-perimeter = (1/ep)*v'*M*pchi; 
+K = FEMatrices.K;
+M = FEMatrices.M;
+F = FEMatrices.F;
+
+
+% [K,M,F] = assema(p,t,c,a,f);
+% K=K+M;
+% vNew = K \ F;
+
+%perimeter = (1/ep)*v'*M*pchi;
+perimeter=(2/ep)*(1-vNew)'*M*pchi;
 
 dtper= (1/ep)*(1-2*vNew);
 
