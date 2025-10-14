@@ -47,23 +47,19 @@ tchi= pdeintrp(p, t, pchi); %funcion caracteristica interpolada en el baricentro
 ep =4*h;
 c = ep^2;
 a = 1;
-f = tchi
+f = tchi;
 m=0;
 
+[K,M,F] = solvper(mesh,a,c,f);
 
-model = createpde();
-geometryFromMesh(model, p, t);
-specifyCoefficients(model, 'm', m, 'd', 0, 'c', c, 'a', a, 'f', f);
-FEMatrices = assembleFEMatrices(model, 'all');
 
-K = FEMatrices.K;
-M = FEMatrices.M;
-F = FEMatrices.F;
+
+
 
 
 % [K,M,F] = assema(p,t,c,a,f);
-% K=K+M;
-% vNew = K \ F;
+K=K+M;
+vNew = K \ F;
 
 %perimeter = (1/ep)*v'*M*pchi;
 perimeter=(2/ep)*(1-vNew)'*M*pchi;
@@ -71,3 +67,5 @@ perimeter=(2/ep)*(1-vNew)'*M*pchi;
 dtper= (1/ep)*(1-2*vNew);
 
 dtper= dtper/Per0 * alpha;
+
+end
