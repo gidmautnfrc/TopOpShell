@@ -165,7 +165,7 @@ while not(strcmp(option,'s'))
     [dt] = tdshell(mesh,U,pdecoef, matprop,signatures,psi);
 
     if per_defined==true
-    [dtper,perimeter] = TopDerPer(mesh,psi,params,per_defined,Per0);
+    [dtper,perimeter] = perimeter(mesh,psi,params,per_defined,Per0);
     end
 
     dt = dt/comp0 + penalty/vol0;
@@ -200,7 +200,7 @@ while not(strcmp(option,'s'))
         [U,F] = shellsolve(mesh,pdecoef,matprop,signatures,bc,psi);
         energy = 0.5*dot(F,U.U_shell); 
         if per_defined==true
-        [~,perimeter] = TopDerPer(mesh,psi,params,per_defined,Per0);
+        [~,perimeter] = perimeter(mesh,psi,params,per_defined,Per0);
         end
      
         % update the volume of the bulk phase
@@ -286,7 +286,7 @@ while not(strcmp(option,'s'))
             
             [U,F] = shellsolve(mesh,pdecoef,matprop,signatures,bc,psi); 
             energy = 0.5*dot(F,U.U_shell);
-            [~,perimeter] = TopDerPer(mesh,psi,params,per_defined,Per0);
+            [~,perimeter] = perimeter(mesh,psi,params,per_defined,Per0);
 
 
             if ~per_defined

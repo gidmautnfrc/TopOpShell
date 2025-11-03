@@ -1,4 +1,4 @@
-function [dtper,perimeter] = TopDerPer(mesh,psi,params,per_defined,Per0)
+function [dtper,perimeter] = Perimeter(mesh,psi,params,per_defined,Per0)
  
 p= mesh.p; t=mesh.t;
 alpha= params.alpha * per_defined;
