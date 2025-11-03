@@ -1,4 +1,3 @@
-
 function [K,M,F] = assem_scalar_shell(mesh,c,a,f)
 
 % extraccion de datos
