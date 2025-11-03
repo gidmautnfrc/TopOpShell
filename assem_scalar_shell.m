@@ -1,6 +1,6 @@
 function [K,M,F] = assem_scalar_shell(mesh,c,a,f)
 %Assembles scalar integral contributions in a PDE shell problem.
-%chandrupatla2021
+%chandrupatla2021 Introduction to finite elements in engineering
 %
 %% A.A. Romero Onco UTN/FRC GIDMA 03-11-2025
 % Contreras Nicolas UTN/FRC GIDMA 03-11-2025
