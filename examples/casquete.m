@@ -5,7 +5,7 @@ mallas = {'casquete_mallag.m','casquete_mallam.m','casquete_mallaf.m','casquete_
 
    if isempty(mesh)
 	
-	    index = 4;
+	    index = 1;
         run(mallas{index});
 		
         t = msh.TRIANGLES';
