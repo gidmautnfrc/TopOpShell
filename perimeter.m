@@ -1,4 +1,4 @@
-function [dtper,perimeter] = perimeter(mesh,psi,params,per_defined,Per0)
+function [dtper,perimetro] = perimeter(mesh,psi,params,per_defined,Per0)
 % Perimeter provides an approximation of the relative perimeter 
 % and the the derivative  of the approximate perimeter functional
 % proposed by amstutz2022
@@ -71,7 +71,4 @@ vNew = K \ F;
 perimeter=(2/ep)*(1-vNew)'*M*pchi;
 
 dtper= (1/ep)*(1-2*vNew);
-
-dtper= dtper/Per0 * alpha;
-
 end

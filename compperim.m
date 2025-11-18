@@ -44,6 +44,13 @@ clear all; close all; format long e; clc;
     area = mesh.A;
     np = mesh.np;
     vol0 = sum(area);
+
+    per_defined= false;
+    Per0=1;
+    alpha=1;
+    params.alpha= alpha;
+    perimetro = 1;
+    dtper=0;
     
     % topology optimization parameters
     stop = params.stop; 
@@ -157,8 +164,10 @@ while not(strcmp(option,'s'))
     
 %    dt = topder(U,psi,mesh,matprop,pdecoef); % derivada topologica
     [dt] = tdshell(mesh,U,pdecoef, matprop,signatures,psi);
+    [dtper,~] = perimeter(mesh,psi,params,per_defined,Per0);
 
     dt = dt/comp0 + penalty/vol0;
+    dt = dt+per_defined*alpha*dtper;
     dt = dt/sqrt(dot(unitM*dt,dt)); 
     cosin = max(min(dot(unitM*dt,psi),1.0),-1.0);
     theta = max(real(acos(cosin)),1.0e-4);
@@ -182,12 +191,13 @@ while not(strcmp(option,'s'))
         %[U,F] = pdesolve(psi,mesh,matprop,pdecoef,bc); 
         [U,F] = shellsolve(mesh,pdecoef,matprop,signatures,bc,psi);
         energy = 0.5*dot(F,U.U_shell); 
+        [~,perimetro] = perimeter(mesh,psi,params,per_defined,Per0);
         
         % update the volume of the bulk phase
         tchi = pdeintrp(p,t,(psi < 0)); vol = dot(area,tchi);     
        
         % compute shape function
-        sf = energy/comp0 + penalty * vol/vol0;    
+        sf = energy/comp0 + penalty * vol/vol0 + per_defined*alpha*(perimetro/Per0);    
         k = k / 2;
 
     end   
@@ -265,8 +275,14 @@ while not(strcmp(option,'s'))
             
             [U,F] = shellsolve(mesh,pdecoef,matprop,signatures,bc,psi); 
             energy = 0.5*dot(F,U.U_shell); 
-            
-            sf = energy/comp0 + penalty * vol/vol0;
+            [~,perimetro] = perimeter(mesh,psi,params,per_defined,Per0);
+            if ~per_defined
+                per_defined=true;
+                Per0=perimeter;
+                disp('Se activo la restriccion perimetrica');
+            end
+
+            sf = energy/comp0 + penalty * vol/vol0+alpha*(perimetro/Per0);
             k = 1;
             
             option = 'null';
