@@ -5,7 +5,7 @@ mallas = {'perfildobleT_mallag.m','perfildobleT_mallam.m','perfildobleT_mallaf.m
 
    if isempty(mesh)
 	
-	    index = 1;
+	    index = 2;
         run(mallas{index});
 		
         t = msh.TRIANGLES';
@@ -74,7 +74,7 @@ mallas = {'perfildobleT_mallag.m','perfildobleT_mallam.m','perfildobleT_mallaf.m
         % stop criterion
         params.stop = 1.0*pi/180;
         % volume penalization
-       params.penalty = 1250; 
+       params.penalty = 2000; 
  %       params.penalty = 500;
     %% boundary conditions
     

@@ -6,6 +6,7 @@ clear all;close all;clc;
     params=[];
     psi=[];
     
+    
 %       example= @perfilL; 
 %       example= @perfilcuadrado; 
 %       example=@hipercubo;
@@ -78,41 +79,37 @@ a = 1;
 f = tchi;
 m=0;
 
-
- % topplot=1*(psi>0);
- %    tchilogical=find(tchi>0);
- %    tplot= t(:,tchilogical);
- %    tchiplot=-tchi(tchilogical);    
-    
-    % figure(3); clf; set(3,'WindowStyle','docked');
-    % trisurf(t(1:3,:)',p(1,:),p(2,:),p(3,:), tchi,'LineStyle','none');
-    % colormap
-    % axis equal
-
 [K,M,F] = assem_scalar_shell(mesh,c,a,f);
-
-% [K,M,F] = assema(p,t,c,a,f);
+ 
 K=K+M;
 vNew = K \ F;
 
-
-    figure(3); clf; set(3,'WindowStyle','docked');
-    trisurf(t(1:3,:)',p(1,:),p(2,:),p(3,:), vNew,'LineStyle','none');
-    axis equal
- 
-    figure(4); clf; set(3,'WindowStyle','docked');
-    trisurf(t(1:3,:)',p(1,:),p(2,:),p(3,:), tchi,'LineStyle','none');
-    axis equal
-    colorbar
-
-perimeter=(2/ep)*(1-vNew)'*M*pchi
-% perimeter=(perimeter-8.979114584668373e+01)/2
-
+perimetro=(2/ep)*(1-vNew)'*M*pchi
 
 circulo= 2*pi*r
 
-% dtper= (1/ep)*(1-2*vNew);
-% 
-% dtper= dtper/Per0 * alpha;
+dtper= (1/ep)*(1-2*vNew);
 
-% end
+
+    figure(1); clf; set(1,'WindowStyle','docked');
+    trisurf(t(1:3,:)',p(1,:),p(2,:),p(3,:), vNew,'LineStyle','none');
+    axis equal
+    title('vNew');
+    colorbar
+ 
+    figure(2); clf; set(2,'WindowStyle','docked');
+    trisurf(t(1:3,:)',p(1,:),p(2,:),p(3,:), tchi,'LineStyle','none');
+    axis equal
+    colorbar
+    title('tchi');
+    colorbar
+
+     figure(3); clf; set(3,'WindowStyle','docked');
+    trisurf(t(1:3,:)',p(1,:),p(2,:),p(3,:), dtper,'LineStyle','none');
+    axis equal
+    colorbar
+    title('dtper');
+    colorbar
+
+
+

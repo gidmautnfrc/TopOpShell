@@ -27,9 +27,9 @@ clear all; close all; format long e; clc;
 %       example= @perfilcuadrado; 
 %       example=@hipercubo;
 %       example=@perfildobleT;
-%       example=@perfildobleT02;
-%       example=@perfildobleT03;
-        example= @casquete; 
+%      example=@perfildobleT02;
+       example=@perfildobleT03;
+%       example= @casquete; 
     % load problem data
     cd('examples')
              [mesh, params, psi, bc, signatures, pdecoef, matprop] = example(mesh,psi,params);
@@ -47,7 +47,7 @@ clear all; close all; format long e; clc;
 
     per_defined= false;
     Per0=1;
-    alpha=1;
+    alpha=400;
     params.alpha= alpha;
     perimetro = 1;
     dtper=0;
@@ -164,7 +164,7 @@ while not(strcmp(option,'s'))
     
 %    dt = topder(U,psi,mesh,matprop,pdecoef); % derivada topologica
     [dt] = tdshell(mesh,U,pdecoef, matprop,signatures,psi);
-    [dtper,~] = perimeter(mesh,psi,params,per_defined,Per0);
+    [dtper,perimetro] = perimeter(mesh,psi,params,per_defined,Per0);
 
     dt = dt/comp0 + penalty/vol0;
     dt = dt+per_defined*alpha*dtper;
@@ -278,7 +278,7 @@ while not(strcmp(option,'s'))
             [~,perimetro] = perimeter(mesh,psi,params,per_defined,Per0);
             if ~per_defined
                 per_defined=true;
-                Per0=perimeter;
+                Per0=perimetro;
                 disp('Se activo la restriccion perimetrica');
             end
 

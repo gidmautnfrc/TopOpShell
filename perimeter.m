@@ -56,19 +56,13 @@ a = 1;
 f = tchi;
 m=0;
 
-[K,M,F] = solvper(mesh,a,c,f);
+[K,M,F] = assem_scalar_shell(mesh,c,a,f);
 
-
-
-
-
-
-% [K,M,F] = assema(p,t,c,a,f);
 K=K+M;
 vNew = K \ F;
 
 %perimeter = (1/ep)*v'*M*pchi;
-perimeter=(2/ep)*(1-vNew)'*M*pchi;
+perimetro=(2/ep)*(1-vNew)'*M*pchi;
 
 dtper= (1/ep)*(1-2*vNew);
 end
