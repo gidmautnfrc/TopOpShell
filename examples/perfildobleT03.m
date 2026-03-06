@@ -5,7 +5,7 @@ mallas = {'perfildobleT_mallag.m','perfildobleT_mallam.m','perfildobleT_mallaf.m
 
    if isempty(mesh)
 	
-	    index = 2;
+	    index = 3;
         run(mallas{index});
 		
         t = msh.TRIANGLES';

@@ -167,7 +167,7 @@ while not(strcmp(option,'s'))
     [dtper,perimetro] = perimeter(mesh,psi,params,per_defined,Per0);
 
     dt = dt/comp0 + penalty/vol0;
-    dt = dt+per_defined*alpha*dtper;
+    dt = dt+per_defined*alpha*(dtper/Per0);
     dt = dt/sqrt(dot(unitM*dt,dt)); 
     cosin = max(min(dot(unitM*dt,psi),1.0),-1.0);
     theta = max(real(acos(cosin)),1.0e-4);
