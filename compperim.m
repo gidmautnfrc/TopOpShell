@@ -111,7 +111,7 @@ clear all; close all; format long e; clc;
 %       figure(2); clf; pdesurf(p,t, U(1:np)); 
 
         k = 1; iter = 0; option = 'null'; 
-        gsf = sf; gth = pi; git = iter; gvo = vol;
+        gsf = sf; gth = pi; git = iter; gvo = vol; gpe = perimetro;
         
 % %% PLOT         
 % 
@@ -204,7 +204,7 @@ while not(strcmp(option,'s'))
             
     k = k * 2;
 
-    git = [git,iter]; gsf = [gsf,sf]; gth = [gth,theta]; gvo = [gvo,vol];    
+  git = [git,iter]; gsf = [gsf,sf]; gth = [gth,theta]; gvo = [gvo,vol]; gpe = [gpe,perimetro]; 
     
     disp(['iter   = ', num2str(iter)]);
     disp(['volume = ', num2str(vol),' => ', num2str(vol*100/vol0), '%']);
@@ -241,52 +241,71 @@ while not(strcmp(option,'s'))
     plot(git,gth*180/pi, ':*k'); title('Theta Angle');
     
     figure(6); clf; set(6,'WindowStyle','docked');
-    plot(git,gvo/vol0, ':*k'); title('Volume Fraction');   
+    plot(git,gvo/vol0, ':*k'); title('Volume Fraction');
+
+    figure(7); clf; set(7,'WindowStyle','docked');
+    plot(git,gpe, ':*b'); title('Evolución del Perímetro'); % Lo pongo en azul (b) para distinguirlo
     
     if or(k < kmin,theta < stop)
-        % stop or try a mesh refinement        
-        while and(not(strcmp(option,'r')), not(strcmp(option,'s')))
-          option = input('\n -> type "r" to remesh or "s" to stop : ', 's');
-        end
         
-        if (option == 'r')
-            cd('examples')
-%                 [mesh, pdecoef, matprop, params, bc, psi] = example(mesh,psi,params);
-                  [mesh, params,psi, bc, signatures,C] = example(mesh,psi,params);
-            cd ..
-            % update data            
-               % mesh and geometry  parameters
+        if ~per_defined
+            % ---------------------------------------------------------
+            % FASE 1 COMPLETADA: Se alcanzó el óptimo sin perímetro
+            % ---------------------------------------------------------
+            disp('=================================================');
+            disp('Óptimo inicial alcanzado. ');
+            disp('Activando restricción perimétrica y continuando...');
+            disp('=================================================');
+            
+            per_defined = true;
+            Per0 = perimetro; % Guardamos el perímetro de este instante como referencia
+            
+            % Recalculamos la función de forma (sf) sumando el término que ahora vale
+            sf = energy/comp0 + penalty * vol/vol0 + alpha*(perimetro/Per0);
+            
+            % Reseteamos 'k' para que el optimizador tenga "energía" para 
+            % seguir buscando el nuevo óptimo con el perímetro activado
+            k = 1; 
+            
+        else
+            % ---------------------------------------------------------
+            % FASE 2 COMPLETADA: Se alcanzó el óptimo CON perímetro
+            % Aquí sí preguntamos si queremos remallar o detener
+            % ---------------------------------------------------------
+            while and(not(strcmp(option,'r')), not(strcmp(option,'s')))
+              option = input('\n -> type "r" to remesh or "s" to stop : ', 's');
+            end
+            
+            if (option == 'r')
+                cd('examples')
+                      [mesh, params,psi, bc, signatures,C] = example(mesh,psi,params);
+                cd ..
+                
+                % update data            
                 p = mesh.p; t = mesh.t;
                 area = mesh.A; np = mesh.np; vol0 = sum(area);
-            
-            [~,unitM,~] = assema(p,t,0,1,0);
-            psi = psi/sqrt(dot(unitM*psi,psi)); 
-            tchi = pdeintrp(p,t,(psi < 0)); 
-            vol = dot(area,tchi); % volume
-            
-%             aux = matprop; aux.gamma = 1.0 ;% hold-all domain
-%             [U,F] = pdesolve(psi,mesh,aux,pdecoef,bc); comp0 = dot(F,U);
-%             [U,F] = pdesolve(psi,mesh,matprop,pdecoef,bc); energy = dot(F,U); 
-
-             aux = matprop; aux.gamma = 1.0;
-            [U,F] = shellsolve(mesh,pdecoef,aux,signatures,bc,psi);
-            comp0 = 0.5*dot(F,U.U_shell);
-            
-            
-            [U,F] = shellsolve(mesh,pdecoef,matprop,signatures,bc,psi); 
-            energy = 0.5*dot(F,U.U_shell); 
-            [~,perimetro] = perimeter(mesh,psi,params,per_defined,Per0);
-            if ~per_defined
-                per_defined=true;
-                Per0=perimetro;
-                disp('Se activo la restriccion perimetrica');
+                
+                [~,unitM,~] = assema(p,t,0,1,0);
+                psi = psi/sqrt(dot(unitM*psi,psi)); 
+                tchi = pdeintrp(p,t,(psi < 0)); 
+                vol = dot(area,tchi); % volume
+                
+                aux = matprop; aux.gamma = 1.0;
+                [U,F] = shellsolve(mesh,pdecoef,aux,signatures,bc,psi);
+                comp0 = 0.5*dot(F,U.U_shell);
+                
+                [U,F] = shellsolve(mesh,pdecoef,matprop,signatures,bc,psi); 
+                energy = 0.5*dot(F,U.U_shell); 
+                
+                % Recalculamos el perímetro para la nueva malla fina
+                [~,perimetro] = perimeter(mesh,psi,params,per_defined,Per0);
+                Per0 = perimetro; % Actualizamos la referencia para la nueva malla
+                
+                sf = energy/comp0 + penalty * vol/vol0 + alpha*(perimetro/Per0);
+                k = 1;
+                
+                option = 'null';
             end
-
-            sf = energy/comp0 + penalty * vol/vol0+alpha*(perimetro/Per0);
-            k = 1;
-            
-            option = 'null';
-            
         end
     end
 end
