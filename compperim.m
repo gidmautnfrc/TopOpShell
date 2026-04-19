@@ -113,7 +113,7 @@ clear all; close all; format long e; clc;
         k = 1; iter = 0; option = 'null'; 
         gsf = sf; gth = pi; git = iter; gvo = vol; gpe = perimetro;
         
-% %% PLOT         
+% %% PLOT         c_dk
 % 
 %         figure('Name','otro'); clf; set(1,'WindowStyle','docked');
 %         trisurf(t(1:3,:)',p(1,:),p(2,:),p(3,:),(p(3,:)+U.U_shell(2*np+1:3*np,1)'),'LineStyle','none'); 

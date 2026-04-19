@@ -10,7 +10,7 @@ mallas = {'casquete_mallag.m','casquete_mallam.m','casquete_mallaf.m','casquete_
 		
         t = msh.TRIANGLES';
 		
-        psi0=-ones(length(unique(t(1:end-1,:))),1);
+        x
 
     else
 		index = mesh.index;
