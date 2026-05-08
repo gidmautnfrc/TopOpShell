@@ -10,7 +10,7 @@ mallas = {'casquete_mallag.m','casquete_mallam.m','casquete_mallaf.m','casquete_
 		
         t = msh.TRIANGLES';
 		
-        x
+        
 
     else
 		index = mesh.index;
@@ -121,4 +121,6 @@ mallas = {'casquete_mallag.m','casquete_mallam.m','casquete_mallaf.m','casquete_
     [~,node1] = min((z - cz).^2 + (x - cx).^2 + (y-cy).^2);
 
     bc.pNeu = [node1, 3, -150]; 
+
+    [scale,matprop,mesh,bc] = scaling (mesh,bc, matprop);
 end
