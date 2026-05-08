@@ -102,4 +102,5 @@ mallas = {'perfildobleT_mallag.m','perfildobleT_mallam.m','perfildobleT_mallaf.m
 
 %   cx = 0.0; cy = 0; cz=0.05;
 %   node1 = min(find((x-cx).^2 + (z-cz).^2 <= eps^2)); 
+[scale,matprop,mesh,bc] = scaling (mesh,bc, matprop);
 end

@@ -26,10 +26,10 @@ clear all; close all; format long e; clc;
 %       example= @perfilL; 
 %       example= @perfilcuadrado; 
 %       example=@hipercubo;
-%       example=@perfildobleT;
+       example=@perfildobleT;
 %      example=@perfildobleT02;
 %      example=@perfildobleT03;
-       example= @casquete; 
+%      example= @casquete; 
     % load problem data
     cd('examples')
              [mesh, params, psi, bc, signatures, pdecoef, matprop] = example(mesh,psi,params);
@@ -97,7 +97,7 @@ clear all; close all; format long e; clc;
         psi_full = -ones(np,1);              % el vector C en la posicion 10 tiene el auxiliar de gamma para este calculo
 %       [U,F] = shellsolve(psi,mesh,aux,pdecoef,bc); % --> no se que calcula inicialmente aca, que calcula con un gamma 1 y un aux, 
                                                      %      y no entiendo como afecta el a y el tgamma al resultado del assema ori
-        [U,F] = shellsolve(mesh,pdecoef,matprop,signatures,bc,psi_full);
+        [U,F] = shellsoserlve(mesh,pdecoef,matprop,signatures,bc,psi_full);
         comp0 = 0.5*dot(F,U.U_shell);
 
         % solve linear system

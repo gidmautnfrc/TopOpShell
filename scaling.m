@@ -22,7 +22,7 @@ function [scale,matprop,mesh,bc] = scaling (mesh,bc, matprop)
     mesh.p= mesh.p/scale.L_c;
 
  % % 2. Extraer cargas características de las condiciones de Neumann (bc.pNeu)
-    F_max = max(abs(bc.pNeu(:,3)));
+    F_max = max(abs(bc.pNeu));
     bc_m = F_max; % Fuerza característica de membrana 
     gc_b = F_max; % Fuerza característica de flexión 
     scale.b_c = bc_m;
