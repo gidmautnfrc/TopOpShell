@@ -1,4 +1,4 @@
-function [mesh, params, psi0, bc, signatures, pdecoef, matprop] = scaling ()
+function [mesh, params, psi0, bc, signatures, pdecoef, matprop] = scaling (scale)
 % SCALING
 % Realiza un escalamientode de las variables a las al problema de placas 
 %
@@ -16,65 +16,36 @@ function [mesh, params, psi0, bc, signatures, pdecoef, matprop] = scaling ()
     Ly = max(mesh.p(2,:)) - min(mesh.p(2,:));
     Lz = max(mesh.p(3,:)) - min(mesh.p(3,:));
     L = max(Lx, Ly, Lz); 
-    scale.L_max = L;
+    scale.L_c = L;
+
+    p= p/scale.L_c;
 
  % % 2. Extraer cargas características de las condiciones de Neumann (bc.pNeu)
-    % Asumiendo que la 3ra columna de bc.pNeu contiene los valores de fuerza
-    % Se requiere una lógica robusta para separar membrana (dof 1,2) y flexión (dof 3)
-    % Aquí se esquematiza el concepto:
-    F_max = max(abs(bc.pNeu(:,3))); 
-    
-    % ATENCIÓN: Debes programar la extracción correcta de b_c y g_c basada en 
-    % los grados de libertad asociados a la membrana y a la flexión.
-    bc_m = F_max; % Fuerza característica de membrana (Placeholder)
-    gc_b = F_max; % Fuerza característica de flexión (Placeholder)
-    
-    matprop.force_m = bc_m;
-    matprop.force_b = gc_b;
+    F_max = max(abs(bc.pNeu(:,3)));
+    bc_m = F_max; % Fuerza característica de membrana 
+    gc_b = F_max; % Fuerza característica de flexión 
+    scale.m_c = bc_m;
+    scale.b_c = gc_b;
+
+    bc.pNeu = bc.pNeu/m_c;
     
     % Parámetros físicos
-    h = matprop.h0;
-    mu = matprop.mu_dkt; % Módulo de corte
+    scale.E_c = matprop.E0;
+    scale.gamma_c = matprop.gamma;
+    scale.nu_c = matprop.nu0;
+    scale.h_c = matprop.h0;
+    scale.la_dkt_c = matprop.la; 
+    scale.mu_dkt_c = matprop.mu;
+
+
+    matprop.E0 = matprop.E0/scale.E_c;
+    matprop.gamma =  matprop.gamma/scale.gamma_c;
+    matprop.nu0 = matprop.nu0/scale.nu_c;
+    matprop.h0 = matprop.h0/scale.h_c;
+    matprop.la = matprop.la/scale.la_dkt_c;
+    matprop.mu =  matprop.mu/scale.mu_dkt_c;
+
     
-    % 3. Bifurcación según la estrategia de escalamiento
-    switch upper(matprop.scaling_strategy)
-        case 'A'
-            % ESTRATEGIA A: Adimensionalización fuerte (Forma débil)
-            
-            % Escalar geometría
-            mesh.p = mesh.p / L;
-            
-            % Escalar cargas de contorno (Adimensionalización de F)
-            % Pseudo-código: bc.pNeu(es_membrana, 3) = bc.pNeu(es_membrana, 3) / bc_m;
-            % Pseudo-código: bc.pNeu(es_flexion, 3) = bc.pNeu(es_flexion, 3) / gc_b;
-            
-            % Computar factores de escala de desplazamiento
-            matprop.wc = (12 * L^4 * gc_b) / (h^3 * mu);
-            matprop.uc = matprop.wc * (gc_b / bc_m);
-            
-            % Notificamos que Pi2 no se usa en la estrategia A
-            matprop.Pi2 = 1.0; 
-            
-        case 'B'
-            % ESTRATEGIA B: Escalamiento del funcional de costo (Penalización)
-            
-            % La malla y las cargas se mantienen con dimensiones físicas.
-            matprop.uc = 1.0;
-            matprop.wc = 1.0;
-            
-            % Computar el número adimensional Pi_2
-            matprop.Pi2 = (gc_b * L^2) / (bc_m * h^2);
-            
-        case 'NONE'
-            % Sin escalamiento (Comportamiento original con mal condicionamiento)
-            matprop.uc = 1.0;
-            matprop.wc = 1.0;
-            matprop.Pi2 = 1.0;
-            matprop.L_char = 1.0;
-            
-        otherwise
-            error('Estrategia de escalamiento no reconocida. Use ''A'', ''B'', o ''NONE''.');
-    end
 end
 
 
